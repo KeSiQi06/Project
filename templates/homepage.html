@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>ECOBEAUTY</title>
+</head>
+
+<body>
+    <header class="bar">
+        <div class="container">
+            <nav class="left-nav">
+                <a href="#" class="current">Home</a>
+                <a href="login.html">Log In / Sign Up</a>
+            </nav>
+
+            <div class="menu" id="menu">
+                <i class="fas fa-bars"></i>
+                <div class="sub-menu">
+                    <ul>
+                        <li><a href="skincare.html">Skincare Products</a></li>
+                        <li><a href="makeup.html">Make-up Products</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <header class="cart">
+                <div class="shopping">
+                    <img src="{{ url_for('static', filename='photo/shopping.svg') }}">
+                </div>
+            </header>
+        </div>
+
+        <div class="card">
+            <h1>Your Shopping Cart</h1>
+            <div class="sidebar">
+            <ul class="listCard"></ul>
+            </div>
+            <div class="all">
+                <div class="total">0</div>
+                <div class="closeShopping" style="background-color: #FAB3A9;">Close</div>
+            </div>
+            <div class="CheckOut"><a href="checkout.html">Check Out</a></div>
+        </div>
+    </header>
+    <script src="{{ url_for('static', filename='java/header.js') }}"></script>
+</body>
+</html>
