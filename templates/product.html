@@ -3,9 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/product.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Document</title>
+    <header class="bar">
+        <div class="container">
+            <nav class="left-nav">
+                <a href="{{ url_for('home') }}">Home</a>
+                <a href="{{ url_for('login') }}">Log In / Sign Up</a>
+            </nav>
+
+            <div class="menu" id="menu">
+                <i class="fas fa-bars"></i>
+                <div class="sub-menu">
+                  <a href="{{ url_for('product') }}" class="current">Products</a>
+                  <a href="{{ url_for('chatbot') }}">Chatbot</a>
+                </div>
+            </div>
+
+            <header class="cart">
+                <div class="shopping">
+                    <img src="{{ url_for('static', filename='photo/shopping.svg') }}">
+                </div>
+            </header>
+        </div>
+
+        <div class="card">
+            <h1>Your Shopping Cart</h1>
+            <div class="sidebar">
+            <ul class="listCard"></ul>
+            </div>
+            <div class="all">
+                <div class="total">0</div>
+                <div class="closeShopping" style="background-color: #FAB3A9;">Close</div>
+            </div>
+            <div class="CheckOut"><a href="checkout.html">Check Out</a></div>
+        </div>
+    </header>
 </head>
 <body>
-    <h1>Save my life</h1>
+    <div class="listCards"></div>
+    <script src="{{ url_for('static', filename='java/header.js') }}"></script>
+    <script src="{{ url_for('static', filename='java/product.js') }}"></script>
+    <h1>Skincare Products</h1>
+    <script>
+        // Function to handle checkout button click
+    function goToCheckout() {
+        // Retrieve the cart items from localStorage
+        const cartItems = JSON.parse(localStorage.getItem('cartItems'));
+
+        // Redirect to the checkout page with the cart items as query parameters in the URL
+        const queryParams = new URLSearchParams({ cartItems: JSON.stringify(cartItems) });
+        window.location.href = `checkout.html?${queryParams.toString()}`;
+    }
+    </script>
 </body>
 </html>
