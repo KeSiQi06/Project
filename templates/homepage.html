@@ -12,16 +12,16 @@
     <header class="bar">
         <div class="container">
             <nav class="left-nav">
-                <a href="#" class="current">Home</a>
-                <a href="login.html">Log In / Sign Up</a>
+                <a href="{{ url_for('home') }}" class="current">Home</a>
+                <a href="{{ url_for('login') }}">Log In / Sign Up</a>
             </nav>
 
             <div class="menu" id="menu">
                 <i class="fas fa-bars"></i>
                 <div class="sub-menu">
                     <ul>
-                        <li><a href="skincare.html">Skincare Products</a></li>
-                        <li><a href="makeup.html">Make-up Products</a></li>
+                        <li><a href="{{ url_for('skincare') }}">Skincare Products</a></li>
+                        <li><a href="{{ url_for('makeup') }}">Make-up Products</a></li>
                     </ul>
                 </div>
             </div>
