@@ -14,13 +14,9 @@ def login():
 def signup():
     return render_template('signup.html')
 
-@app.route('/skincare')
-def skincare():
-    return render_template('skincare.html')
-
-@app.route('/makeup')
-def makeup():
-    return render_template('makeup.html')
+@app.route('/product')
+def product():
+    return render_template('product.html')
 
 @app.route('/checkout')
 def checkout():
@@ -41,6 +37,11 @@ def history():
 @app.route('/feedback')
 def feedbackform():
     return render_template('feedbackform.html')
+
+@app.route('/chatbot')
+def chatbot():
+    return render_template('chatbot.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
