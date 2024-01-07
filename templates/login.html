@@ -1,17 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Login</title>
 </head>
 <body>
     <h1>Login</h1>
-    <form method="POST" action="/login">
-        <label for="email">Email:</label>
-        <input type="email" name="email" required><br><br>
-        <label for="password">Password:</label>
-        <input type="password" name="password" required><br><br>
-        <input type="submit" value="Log In">
+    <form method="post">
+        <input type="radio" id="member" name="user_type" value="member" checked>
+        <label for="member">Member</label><br>
+        <input type="radio" id="staff" name="user_type" value="staff">
+        <label for="staff">Staff</label><br><br>
+
+        <label for="email">Email/Staff ID:</label><br>
+        <input type="text" id="email" name="email" required><br>
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password" required><br><br>
+        <input type="submit" value="Login">
     </form>
-    <p>Don't have an account? <a href="/signup">Sign up</a></p>
+
+    {% if user_name %}
+    <div style="position: absolute; top: 0; right: 0; padding: 10px;">
+        Welcome, {{ user_name }}
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+    {% endif %}
+    
 </body>
 </html>
