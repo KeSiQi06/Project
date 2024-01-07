@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/styles.css">
+    <title>Purchase Details</title>
+</head>
+<body>
+    <div class="container">
+        <h1 class="header">Purchase Details</h1>
+
+            <table class="purchase-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Customer ID</th>
+                        <th>Order Number</th>
+                        <th>Customer Name</th>
+                        <th>Items Purchased</th>
+                        <th>Points Awarded</th>
+                        <th>Amount Paid</th>
+                        <th>Delivery Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td> purchase.month </td>
+                            <td> purchase.customer_id </td>
+                            <td> purchase.order_number </td>
+                            <td>purchase.customer_name </td>
+                            <td> purchase.items_purchased </td>
+                            <td> purchase.points_awarded </td>
+                            <td> purchase.amount_paid </td>
+                            <td> purchase.delivery_status </td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        
+            <p class="no-purchases">No purchases found for {{ selected_month }}</p>
+        
+    </div>
+</body>
+</html>
