@@ -1,0 +1,76 @@
+/* Scrollbar for the table */
+table {
+    width: 100%; /* Adapt width as needed */
+    max-height: 300px; /* Adjust height based on your needs */
+    overflow: scroll;
+    overflow-x: hidden; /* Hide horizontal scrollbar on top */
+    padding-right: 17px; /* Adjust padding to match scrollbar width */
+  }
+  
+  /* Additional styling suggestions (optional) */
+  /* Feel free to customize these as needed */
+  
+  body {
+    font-family: sans-serif;
+    margin: 0;
+  }
+  
+  nav {
+    background-color: #f0f0f0;
+    padding: 15px;
+  }
+  
+  nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  nav li {
+    display: inline-block;
+    margin-right: 20px;
+  }
+  
+  nav a {
+    text-decoration: none;
+    color: black;
+  }
+  
+  button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
+  
+
+  .dropdown {
+    display: inline-block;
+    position: relative;
+  }
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    width: 100%;
+    overflow: auto;
+    box-shadow: 0px 10px 10px 0px rgba(0,0,0,0.4);
+  }
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  .dropdown-content a {
+    display: block;
+    color: #000000;
+    padding: 5px;
+    text-decoration: none;
+  }
+  .dropdown-content a:hover {
+    color: #FFFFFF;
+    background-color: #00A4BD;
+  }
