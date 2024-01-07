@@ -1,4 +1,17 @@
 
+.cart{
+    display: grid;
+    grid-template-columns: 1fr 50px;
+    margin-top: 50px;
+}
+.cart .shopping{
+    position: relative;
+    text-align: right;
+}
+.cart .shopping img{
+    width: 40px;
+}
+
 .list{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -30,6 +43,70 @@
     width: 100%;
     padding: 10px;
 }
+.card{
+    position: fixed;
+    top:0;
+    left: 100%;
+    width: 500px;
+    background-color: #eb959f;
+    height: 100vh;
+    transition: 0.5s;
+}
+.active .card{
+    left: calc(100% - 500px);
+}
+
+.card h1{
+    color:black;
+    font-weight: 100;
+    margin-top:35px;
+    padding: 0 20px;
+    height: 80px;
+    display: flex;
+}
+
+.card .all{
+    position: absolute;
+    bottom: 70px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+}
+.card .all div{
+    background-color: #fff1f1;
+    width: 100%;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.card .CheckOut {
+    position: absolute;
+    background-color: #432626;
+    text-decoration: none; 
+    width: 100%;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    cursor: pointer;
+    bottom: 0;
+}
+.card .CheckOut a {
+    text-decoration: none; 
+    color: white; 
+
+}
+
+.card .all div:nth-child(2){
+    background-color: #1C1F25;
+    color: #fff;
+}
 
 .sidebar {
     margin: 0;
@@ -39,14 +116,14 @@
     overflow: auto;
   }
   
-.sidebar a {
+  .sidebar a {
     display: block;
     color: black;
     padding: 16px;
     text-decoration: none;
   }
   
-.sidebar a:hover:not(.active) {
+  .sidebar a:hover:not(.active) {
     background-color: #555;
     color: white;
   }
