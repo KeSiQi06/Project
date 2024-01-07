@@ -50,9 +50,6 @@ def index():
 def purchase_details():
     return render_template('purchase_details')
 
-if __name__ == '__main__':
-    app.run(debug=True)
-
 @app.route('/inventory')
 def inventory()
     return render_template('inventory.html')
@@ -60,3 +57,7 @@ def inventory()
 @app.route('/customerprofile')
 def customerprofile()
     return render_template('customerprofile.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
