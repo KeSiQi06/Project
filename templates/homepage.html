@@ -10,27 +10,26 @@
 
 <body>
     <header class="bar">
-        <div class="container">
             <nav class="left-nav">
-                <a href="{{ url_for('home') }}" class="current">Home</a>
+                <a href="{{ url_for('home') }}">Home</a>
                 <a href="{{ url_for('login') }}">Log In / Sign Up</a>
             </nav>
-
             <div class="menu" id="menu">
                 <i class="fas fa-bars"></i>
                 <div class="sub-menu">
-                  <a href="{{ url_for('product') }}">Products</a>
+                  <a href="{{ url_for('product') }}" class="current">Products</a>
                   <a href="{{ url_for('chatbot') }}">Chatbot</a>
                 </div>
             </div>
 
-            <header class="cart">
+            <div class="cart">
                 <div class="shopping">
                     <img src="{{ url_for('static', filename='photo/shopping.svg') }}">
                 </div>
-            </header>
-        </div>
+            </div>
+            <div class="list"></div>
 
+        <div class="container">
         <div class="card">
             <h1>Your Shopping Cart</h1>
             <div class="sidebar">
@@ -40,8 +39,9 @@
                 <div class="total">0</div>
                 <div class="closeShopping" style="background-color: #FAB3A9;">Close</div>
             </div>
-            <div class="CheckOut"><a href="checkout.html">Check Out</a></div>
+            <div class="CheckOut"><a href="{{ url_for('checkout') }}">Check Out</a></div>
         </div>
+    </div>
     </header>
     <script src="{{ url_for('static', filename='java/header.js') }}"></script>
 </body>

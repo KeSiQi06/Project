@@ -38,12 +38,12 @@ function initApp() {
       let newDiv = document.createElement('div');
       newDiv.classList.add('item');
       newDiv.innerHTML = `
-        <img src="{{ url_for('static', filename=value.image) }}">
+        <img src="static/${value.image}">
         <div class="title">${value.name}</div>
         <p class="description">${value.description}</p>
         <div class="price">$${value.price.toLocaleString()}</div>
         <button onclick="addToCard(${key})">Add To Cart</button>`;
-        document.querySelector('.listCards').appendChild(newDiv);
+      list.appendChild(newDiv);
 
     });
 }
@@ -79,7 +79,7 @@ function reloadCard() {
     if (value) {
       let newDiv = document.createElement('li');
       newDiv.innerHTML = `
-        <div><img src="{{ url_for('static', filename=value.image) }}"></div>
+        <div><img src="static/${value.image}"></div>
         <div>${value.name}</div>
         <div>$${(value.price * value.quantity).toLocaleString()}</div>
         <div>
@@ -107,6 +107,3 @@ function changeQuantity(key, quantity) {
     reloadCard();
   }
 
-  window.addEventListener('DOMContentLoaded', (event) => {
-    initApp();
-});
