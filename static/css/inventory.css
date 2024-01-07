@@ -1,0 +1,64 @@
+/* Scrollbar for the table */
+table {
+  width: 100%; /* Adapt width as needed */
+  max-height: 300px; /* Adjust height based on your needs */
+  overflow: scroll;
+  overflow-x: hidden; /* Hide horizontal scrollbar on top */
+  padding-right: 17px; /* Adjust padding to match scrollbar width */
+}
+
+/* Additional styling suggestions (optional) */
+/* Feel free to customize these as needed */
+
+body {
+  font-family: sans-serif;
+  margin: 0;
+}
+
+nav {
+  background-color: #f0f0f0;
+  padding: 15px;
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav li {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+nav a {
+  text-decoration: none;
+  color: black;
+}
+
+button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  text-align: left;
+  padding: 8px;
+}
+
+th {
+  background-color: #f2f2f2;
+}
