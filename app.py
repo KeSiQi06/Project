@@ -44,3 +44,11 @@ def chatbot():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+@app.route('/inventory')
+def inventory()
+    return render_template('inventory.html')
+
+@app.route('/customerprofile')
+def customerprofile()
+    return render_template('customerprofile.html')
