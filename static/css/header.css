@@ -84,9 +84,7 @@
     left: calc(100% - 500px);
 }
 
-.active .container {
-    transform: translateX(-200px);
-}
+
 
 .card h1 {
     color: black;
@@ -152,3 +150,5 @@
 .cart {
     order: 3; /* Move the cart to the rightmost side */
 }
+
+/* Your existing styles */
