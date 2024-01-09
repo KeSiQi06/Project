@@ -34,18 +34,25 @@ let products = [
 let listCards  = [];
 
 function initApp() {
-    products.forEach((value, key) => {
-      let newDiv = document.createElement('div');
-      newDiv.classList.add('item');
-      newDiv.innerHTML = `
-        <img src="static/${value.image}">
-        <div class="title">${value.name}</div>
-        <p class="description">${value.description}</p>
-        <div class="price">$${value.price.toLocaleString()}</div>
-        <button onclick="addToCard(${key})">Add To Cart</button>`;
-      list.appendChild(newDiv);
+  // Load cart items from local storage
+  const storedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+  listCards = storedCartItems;
 
-    });
+  // Render products list
+  products.forEach((value, key) => {
+    let newDiv = document.createElement('div');
+    newDiv.classList.add('item');
+    newDiv.innerHTML = `
+      <img src="static/${value.image}">
+      <div class="title">${value.name}</div>
+      <p class="description">${value.description}</p>
+      <div class="price">$${value.price.toLocaleString()}</div>
+      <button onclick="addToCard(${key})">Add To Cart</button>`;
+    list.appendChild(newDiv);
+  });
+
+  // Update the cart UI
+  reloadCard();
 }
   
   initApp();
@@ -66,36 +73,36 @@ function initApp() {
     reloadCard();
   }
 
-function reloadCard() {
-  listCard.innerHTML = '';
-  let count = 0;
-  let totalPrice = 0;
+  function reloadCard() {
+    listCard.innerHTML = '';
+    let count = 0;
+    let totalPrice = 0;
+  
+    // Loop through the cart items and update the quantity and total price
+    listCards.forEach((value, key) => {
+      totalPrice += value.price * value.quantity;
+      count += value.quantity;
+  
+      if (value) {
+        let newDiv = document.createElement('li');
+        newDiv.innerHTML = `
+          <div><img src="static/${value.image}"/></div>
+          <div>${value.name}</div>
+          <div>$${(value.price * value.quantity).toLocaleString()}</div>
+          <div>
+            <button onclick="changeQuantity(${key}, ${value.quantity - 1})">-</button>
+            <div class="count">${value.quantity}</div>
+            <button onclick="changeQuantity(${key}, ${value.quantity + 1})">+</button>
+          </div>`;
+        listCard.appendChild(newDiv);
+      }
+    });
+  
+    total.innerText = `$${totalPrice.toLocaleString()}`;
+    quantity.innerText = count;
+  }
 
-  // Loop through the cart items and update the quantity and total price
-  listCards.forEach((value, key) => {
-    totalPrice += value.price * value.quantity;
-    count += value.quantity;
-
-    if (value) {
-      let newDiv = document.createElement('li');
-      newDiv.innerHTML = `
-        <div><img src="static/${value.image}"></div>
-        <div>${value.name}</div>
-        <div>$${(value.price * value.quantity).toLocaleString()}</div>
-        <div>
-          <button onclick="changeQuantity(${key}, ${value.quantity - 1})">-</button>
-          <div class="count">${value.quantity}</div>
-          <button onclick="changeQuantity(${key}, ${value.quantity + 1})">+</button>
-        </div>`;
-      listCard.appendChild(newDiv);
-    }
-  });
-
-  total.innerText = `$${totalPrice.toLocaleString()}`;
-  quantity.innerText = count;
-}
-
-function changeQuantity(key, quantity) {
+  function changeQuantity(key, quantity) {
     if (quantity == 0) {
       delete listCards[key];
     } else {
