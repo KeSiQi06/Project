@@ -140,9 +140,56 @@ def index():
 def purchase_details():
     return render_template('purchase_details')
 
-@app.route('/inventory')
+from flask import Flask, render_template, request, jsonify
+
+app = Flask(__name__)
+
+# List to store product data (replace this with a database in a real application)
+products = [
+    {'id': 1, 'product_name': 'Moisturiser', 'price': '$32', 'stocks': '9000', 'description': 'xxxxxxxx', 'points': '40'},
+    {'id': 2, 'product_name': 'Serum', 'price': '$49', 'stocks': '1200', 'description': 'xxxxxxxx', 'points': '40'},
+    {'id': 3, 'product_name': 'Lip Balm', 'price': '$18', 'stocks': '9800', 'description': 'xxxxxxxx', 'points': '20'},
+]
+
+@app.route('/')
 def inventory():
-    return render_template('inventory.html')
+    return render_template('inventory.html', products=products)
+
+@app.route('/add_product', methods=['POST'])
+def add_product():
+    new_product_data = {
+        'id': len(products) + 1,  # Ensure a unique ID for the new product
+        'product_name': request.form.get('product_name'),
+        'price': request.form.get('price'),
+        'stocks': request.form.get('stocks'),
+        'description': request.form.get('description'),
+        'points': request.form.get('points'),
+    }
+
+    products.append(new_product_data)
+
+    return render_template('inventory.html', products=products)
+
+@app.route('/remove_product', methods=['POST'])
+def remove_product():
+    product_id = int(request.form.get('product_id'))
+
+    # Find the product with the given id and remove it
+    for product in products:
+        if product['id'] == product_id:
+            products.remove(product)
+            return jsonify({'status': 'success', 'message': 'Product removed successfully'})
+
+    # If the product with the given ID is not found
+    return jsonify({'status': 'error', 'message': 'Product not found'})
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
+
+
+
 
 @app.route('/customerprofile')
 def customerprofile():

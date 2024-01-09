@@ -1,68 +1,117 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Inventory Page</title>
-<link rel="stylesheet" href="../static/css/inventory.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory Page</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .remove-button {
+      cursor: pointer;
+      background-color: #ff6666;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 12px;
+    }
+  </style>
 </head>
 <body>
-    
-<nav>
-  <ul>
-    <li><a href="inventory.html">Inventory</a></li>
-    <li><a href="customerprofile.html">Customer Profile</a></li>
-    <li><a href="purchase_details.html">Purchase Details</a></li>
-    <li><a href="report.html">Report</a></li>
-    <li style="float: right;">Staff ID: 45679</li>
-  </ul>
-</nav>
 
-<button>ADD NEW PRODUCT</button>
+  <nav>
+    <ul>
+      <li><a href="inventory.html">Inventory</a></li>
+      <li><a href="customerprofile.html">Customer Profile</a></li>
+      <li><a href="purchase_details.html">Purchase Details</a></li>
+      <li><a href="report.html">Report</a></li>
+      <li style="float: right;">Staff ID: 2468</li>
+    </ul>
+  </nav>
 
-<table>
-  <thead>
-    <tr>
-      <th></th>
-      <th>Product</th>
-      <th>Price</th>
-      <th>Stocks</th>
-      <th>Description</th>
-      <th>Points</th>
-      <th>Remove</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align: center;"><img src="../static/photo/SkinCare/Moisturizer/LimeWire AI Studio Asset (2).jpg" alt="" style="width:128px;height:128px;"></td>
-      <td>Moisturiser</td>
-      <td>$32</td>
-      <td>9000</td>
-      <td>xxxxxxxx</td>
-      <td>40</td>
-      <td style="text-align: center;"><img src="../static/photo/inventory/189690.png" style="width:35px;height: 35px;"> </td>
-    </tr>
-    <tr>
-      <td style="text-align: center;"><img src="../static/photo/SkinCare/Serum/LimeWire AI Studio Asset (3).jpg" style="width:128px;height:128px;"></td>
-      <td>Serum</td>
-      <td>$49</td>
-      <td>1200</td>
-      <td>xxxxxxxx</td>
-      <td>40</td>
-      <td style="text-align: center;"><img src="../static/photo/inventory/189690.png" style="width:35px;height: 35px;"></td>
-    </tr>
-    <tr>
-      <td style="text-align: center;"><img src="../static/photo/MakeUp/Lips/LimeWire AI Studio Asset (4).jpg" style="width:128px;height:128px;"></td>
-      <td>Lip Balm</td>
-      <td>$18</td>
-      <td>9800</td>
-      <td>xxxxxxxx</td>
-      <td>20</td>
-      <td style="text-align: center;"><img src="../static/photo/inventory/189690.png" style="width:35px;height: 35px;"></td>
-    </tr>
+  <form method="post" action="/add_product">
+    <button type="submit">ADD NEW PRODUCT</button>
+    <input type="text" name="product_name" placeholder="Product Name">
+    <input type="text" name="price" placeholder="Price">
+    <input type="text" name="stocks" placeholder="Stocks">
+    <input type="text" name="description" placeholder="Description">
+    <input type="text" name="points" placeholder="Points">
+  </form>
 
+  <form method="post" action="/remove_product" id="removeForm">
+    <input type="hidden" name="product_id" id="productId">
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Stocks</th>
+        <th>Description</th>
+        <th>Points</th>
+        <th>Remove</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Dynamic content for new products -->
+      {% for product in products %}
+        <tr>
+          <td>{{ product.product_name }}</td>
+          <td>{{ product.price }}</td>
+          <td>{{ product.stocks }}</td>
+          <td>{{ product.description }}</td>
+          <td>{{ product.points }}</td>
+          <td style="text-align: center;">
+            <button class="remove-button" data-product-id="{{ product.id }}" onclick="removeProduct('{{ product.id }}')">Remove</button>
+          </td>
+        </tr>
+      {% endfor %}
     </tbody>
-</table>
+  </table>
 
-<button style="float: right;">EDIT</button>
+  <script>
+    function removeProduct(productId) {
+      var formData = new FormData();
+      formData.append('product_id', productId);
+  
+      fetch('/remove_product', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Handle the response here if needed
+        console.log(data);
+        // Optionally, you can reload the page after successful removal
+        if (data.status === 'success') {
+          location.reload();
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+  </script>
+  
+  
+
 </body>
 </html>
