@@ -140,6 +140,8 @@ def index():
 def purchase_details():
     return render_template('purchase_details')
 
+
+#inventory
 # List to store product data (replace this with a database in a real application)
 products = [
     {'id': 1, 'product_name': 'Moisturiser', 'price': '$32', 'stocks': '9000', 'description': 'xxxxxxxx', 'points': '40'},
@@ -178,10 +180,30 @@ def remove_product():
 
     # If the product with the given ID is not found
     return jsonify({'status': 'error', 'message': 'Product not found'})
+#end of inventory
 
-@app.route('/customerprofile')
-def customerprofile():
+@app.route('/customer_profile')
+def customer_profile():
+    # Add your logic for the customer profile route
     return render_template('customerprofile.html')
+
+@app.route('/report')
+def report():
+    # Add your logic for the report route
+    return render_template('report.html')
+
+@app.route('/report2')
+def report2():
+    # Add your logic for the report route
+    return render_template('report2.html')
+
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+#end of customer profile
+    
 
 # Classes for payment
 class Payment:
