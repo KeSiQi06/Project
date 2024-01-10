@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, session, redirect
+from flask import Flask, render_template, url_for, request, session, redirect, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -34,7 +34,7 @@ def signup():
     return render_template('signup.html')
 
 
-@app.route('/login', methods=['GET', 'POST'])  # Add this decorator if it's missing
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         user_type = request.form.get('user_type')
@@ -132,17 +132,13 @@ def feedbackform():
 def chatbot():
     return render_template('chatbot.html')
 
-@app.route('/')
+@app.route('/index')
 def index():
     return render_template('index.html')
 
 @app.route('/purchase_details')
 def purchase_details():
     return render_template('purchase_details')
-
-from flask import Flask, render_template, request, jsonify
-
-app = Flask(__name__)
 
 # List to store product data (replace this with a database in a real application)
 products = [
@@ -151,7 +147,7 @@ products = [
     {'id': 3, 'product_name': 'Lip Balm', 'price': '$18', 'stocks': '9800', 'description': 'xxxxxxxx', 'points': '20'},
 ]
 
-@app.route('/')
+@app.route('/inventory')
 def inventory():
     return render_template('inventory.html', products=products)
 
@@ -182,14 +178,6 @@ def remove_product():
 
     # If the product with the given ID is not found
     return jsonify({'status': 'error', 'message': 'Product not found'})
-
-if __name__ == '__main__':
-    app.run(debug=True)
-
-
-
-
-
 
 @app.route('/customerprofile')
 def customerprofile():
@@ -239,4 +227,3 @@ class PO_Paynow(PaymentOption):
 
 if __name__ == '__main__':
     app.run(debug=True)
-
