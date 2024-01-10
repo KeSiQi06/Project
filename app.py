@@ -140,15 +140,6 @@ def index():
 def purchase_details():
     return render_template('purchase_details')
 
-<<<<<<< HEAD
-@app.route('/inventory')
-def inventory():
-    return render_template('inventory.html')
-
-@app.route('/customerprofile')
-def customerprofile():
-    return render_template('customerprofile.html')
-=======
 
 #inventory
 # List to store product data (replace this with a database in a real application)
@@ -213,7 +204,6 @@ if __name__ == '__main__':
 
 #end of customer profile
     
->>>>>>> 048ffcc01d5548468d7f06db256c9c497e1ae5c7
 
 # Classes for payment
 class Payment:
