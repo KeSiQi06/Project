@@ -1,14 +1,29 @@
 from flask import Flask, render_template, url_for, request, session, redirect, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_sqlalchemy import SQLAlchemy
+
+
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///yourdatabase.db'  # Configure the database URI
 app.secret_key = 'your_secret_key'
+db = SQLAlchemy(app)
 
-users = []
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128))
+    birthday = db.Column(db.Date, nullable=False)
+
+    def __repr__(self):
+        return f'<User {self.name}>'
 
 # Hardcoded staff credentials
 STAFF_ID = '2468'
 STAFF_PASSWORD = 'NYP2024'
+users = []
 
 @app.route('/')
 def home():
@@ -21,18 +36,20 @@ def signup():
         name = request.form['name']
         email = request.form['email']
         password = request.form['password']
-        hashed_password = generate_password_hash(password)
         birthday = request.form['birthday']
         
+
         # Check if email already exists
-        if any(user['email'] == email for user in users):
+        if User.query.filter_by(email=email).first():
             return render_template('signup.html', error="Email already registered.")
 
-        # Add the new user to the users list
-        users.append({'name': name, 'email': email, 'password': hashed_password, 'birthday': birthday})
+        hashed_password = generate_password_hash(password)
+        new_user = User(name=name, email=email, password_hash=hashed_password, birthday=birthday)
+        db.session.add(new_user)
+        db.session.commit()
+
         return redirect(url_for('login'))
     return render_template('signup.html')
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -44,25 +61,47 @@ def login():
         if user_type == 'staff':
             if email == STAFF_ID and password == STAFF_PASSWORD:
                 session['user_name'] = 'Staff'
-                return redirect(url_for('inventory'))
+                return redirect(url_for('home'))  # Make sure 'inventory' is a valid route if used
             else:
                 return 'Staff login failed. Please check your credentials.'
 
         elif user_type == 'member':
-            user = next((u for u in users if u['email'] == email), None)
-            if user and check_password_hash(user['password'], password):
-                session['user_name'] = user['name']
+            user = User.query.filter_by(email=email).first()
+            if user and check_password_hash(user.password_hash, password):
+                session['user_name'] = user.name
                 return redirect(url_for('home'))
             else:
                 return 'Member login failed. Please check your credentials.'
 
-    return render_template('login.html')
-
+    return render_template('login.html')# Hardcoded staff credentials
     
 @app.route('/logout')
 def logout():
     session.pop('user_name', None)
     return redirect(url_for('home'))
+
+@app.route('/profile')
+def profile():
+    if 'user_name' not in session:
+        return redirect(url_for('login'))
+    user = User.query.filter_by(name=session['user_name']).first()
+    if user:
+        return render_template('profile.html', user=user)
+    return redirect(url_for('login'))
+
+@app.route('/update_profile', methods=['POST'])
+def update_profile():
+    if 'user_name' not in session:
+        return redirect(url_for('login'))
+    user = User.query.filter_by(name=session['user_name']).first()
+    if user:
+        user.name = request.form['name']
+        user.email = request.form['email']
+        user.birthday = request.form['birthday']
+        db.session.commit()
+        return redirect(url_for('profile'))
+    return redirect(url_for('login'))
+
 
 @app.route('/product')
 def product():
@@ -224,6 +263,7 @@ class PO_Paynow(PaymentOption):
         self.paynow_transaction_id = paynow_transaction_id
 #classes for payment ^^^
 
-
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()  # Creates the database tables
     app.run(debug=True)
