@@ -38,13 +38,14 @@
 
   <nav>
     <ul>
-      <li><a href="inventory.html">Inventory</a></li>
-      <li><a href="customerprofile.html">Customer Profile</a></li>
-      <li><a href="purchase_details.html">Purchase Details</a></li>
-      <li><a href="report.html">Report</a></li>
+      <li><a href="{{ url_for('inventory') }}">Inventory</a></li>
+      <li><a href="{{ url_for('customer_profile') }}">Customer Profile</a></li>
+      <li><a href="{{ url_for('purchase_details') }}">Purchase Details</a></li>
+      <li><a href="{{ url_for('report') }}">Report</a></li>
       <li style="float: right;">Staff ID: 2468</li>
     </ul>
   </nav>
+  
 
   <form method="post" action="/add_product">
     <button type="submit">ADD NEW PRODUCT</button>

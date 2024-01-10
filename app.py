@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, session, redirect
+from flask import Flask, render_template, url_for, request, session, redirect, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -34,7 +34,7 @@ def signup():
     return render_template('signup.html')
 
 
-@app.route('/login', methods=['GET', 'POST'])  # Add this decorator if it's missing
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         user_type = request.form.get('user_type')
@@ -132,7 +132,7 @@ def feedbackform():
 def chatbot():
     return render_template('chatbot.html')
 
-@app.route('/')
+@app.route('/index')
 def index():
     return render_template('index.html')
 
@@ -140,6 +140,7 @@ def index():
 def purchase_details():
     return render_template('purchase_details')
 
+<<<<<<< HEAD
 @app.route('/inventory')
 def inventory():
     return render_template('inventory.html')
@@ -147,6 +148,72 @@ def inventory():
 @app.route('/customerprofile')
 def customerprofile():
     return render_template('customerprofile.html')
+=======
+
+#inventory
+# List to store product data (replace this with a database in a real application)
+products = [
+    {'id': 1, 'product_name': 'Moisturiser', 'price': '$32', 'stocks': '9000', 'description': 'xxxxxxxx', 'points': '40'},
+    {'id': 2, 'product_name': 'Serum', 'price': '$49', 'stocks': '1200', 'description': 'xxxxxxxx', 'points': '40'},
+    {'id': 3, 'product_name': 'Lip Balm', 'price': '$18', 'stocks': '9800', 'description': 'xxxxxxxx', 'points': '20'},
+]
+
+@app.route('/inventory')
+def inventory():
+    return render_template('inventory.html', products=products)
+
+@app.route('/add_product', methods=['POST'])
+def add_product():
+    new_product_data = {
+        'id': len(products) + 1,  # Ensure a unique ID for the new product
+        'product_name': request.form.get('product_name'),
+        'price': request.form.get('price'),
+        'stocks': request.form.get('stocks'),
+        'description': request.form.get('description'),
+        'points': request.form.get('points'),
+    }
+
+    products.append(new_product_data)
+
+    return render_template('inventory.html', products=products)
+
+@app.route('/remove_product', methods=['POST'])
+def remove_product():
+    product_id = int(request.form.get('product_id'))
+
+    # Find the product with the given id and remove it
+    for product in products:
+        if product['id'] == product_id:
+            products.remove(product)
+            return jsonify({'status': 'success', 'message': 'Product removed successfully'})
+
+    # If the product with the given ID is not found
+    return jsonify({'status': 'error', 'message': 'Product not found'})
+#end of inventory
+
+@app.route('/customer_profile')
+def customer_profile():
+    # Add your logic for the customer profile route
+    return render_template('customerprofile.html')
+
+@app.route('/report')
+def report():
+    # Add your logic for the report route
+    return render_template('report.html')
+
+@app.route('/report2')
+def report2():
+    # Add your logic for the report route
+    return render_template('report2.html')
+
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+#end of customer profile
+    
+>>>>>>> 048ffcc01d5548468d7f06db256c9c497e1ae5c7
 
 # Classes for payment
 class Payment:
@@ -192,4 +259,3 @@ class PO_Paynow(PaymentOption):
 
 if __name__ == '__main__':
     app.run(debug=True)
-
