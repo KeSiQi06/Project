@@ -270,3 +270,5 @@ class PO_Paynow(PaymentOption):
         self.paynow_transaction_id = paynow_transaction_id
 #classes for payment ^^^
 
+if __name__ == '__main__':
+    app.run(debug=True)
