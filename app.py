@@ -49,21 +49,30 @@ def signup():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+        user_type = request.form.get('user_type')
+        email = request.form.get('email')
+        password = request.form.get('password')
 
-        db = get_db()
-        users = db['users']
+        if user_type == 'staff':
+            if email == STAFF_ID and password == STAFF_PASSWORD:
+                session['user_name'] = 'Staff'
+                return redirect(url_for('home'))
+            else:
+                return 'Staff login failed. Please check your credentials.'
+        
+        elif user_type == 'member':
+            db = get_db()
+            users = db['users']
 
-        user = users.get(email)
-        if user and check_password_hash(user['password_hash'], password):
-            session['user_name'] = user['name']
-            close_db(db)
-            return redirect(url_for('home'))
-        else:
-            close_db(db)
-            return 'Login failed. Please check your credentials.'
-
+            user = users.get(email)
+            if user and check_password_hash(user['password_hash'], password):
+                session['user_name'] = user['name']
+                close_db(db)
+                return redirect(url_for('home'))
+            else:
+                close_db(db)
+                return 'Login failed. Please check your credentials.'
+    
     return render_template('login.html')
 
 
@@ -83,7 +92,7 @@ def profile():
 
     if user:
         close_db(db)
-        return render_template('profile.html', user=user)
+        return render_template('edit_profile.html', user=user)
     else:
         close_db(db)
         return redirect(url_for('login'))
@@ -272,3 +281,4 @@ class PO_Paynow(PaymentOption):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
