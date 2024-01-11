@@ -56,7 +56,7 @@ def login():
         if user_type == 'staff':
             if email == STAFF_ID and password == STAFF_PASSWORD:
                 session['user_name'] = 'Staff'
-                return redirect(url_for('home'))
+                return redirect(url_for('inventory'))
             else:
                 return 'Staff login failed. Please check your credentials.'
         
@@ -237,6 +237,10 @@ def remove_product():
 @app.route('/customerprofile')
 def customerprofile():
     return render_template('customerprofile.html')
+
+@app.route('/report')
+def report():
+    return render_template('report.html')
 
 # Classes for payment
 class Payment:
