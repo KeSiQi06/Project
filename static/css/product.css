@@ -168,3 +168,9 @@
 .listCard .count{
     margin: 0 10px;
 }
+
+.all .quantity {
+    /* Add your styling here */
+    color: #333;
+    margin: 10px 0;
+}

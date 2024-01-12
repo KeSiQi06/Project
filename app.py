@@ -123,6 +123,76 @@ def update_profile():
 def product():
     return render_template('product.html')
 
+def get_cart_db():
+    return shelve.open("cart.db")
+
+@app.route('/add-to-cart', methods=['POST'])
+def add_to_cart():
+    try:
+        data = request.json
+        product_id = str(data.get('productId'))  # Convert product_id to string
+        quantity = data.get('quantity')
+
+        if not product_id or quantity is None:
+            return jsonify({"error": "Product ID and quantity required"}), 400
+
+        with get_cart_db() as db:
+            if product_id in db:
+                db[product_id]['quantity'] += int(quantity)  # Ensure quantity is an integer
+            else:
+                db[product_id] = {'product_id': product_id, 'quantity': int(quantity)}
+
+        return jsonify({"message": "Product added to cart"}), 200
+    except Exception as e:
+        app.logger.error(f"Error in add-to-cart: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/get-cart', methods=['GET'])
+def get_cart():
+    with get_cart_db() as db:
+        cart_items = []
+        for product_id, item in db.items():
+            product = next((p for p in products if str(p['id']) == product_id), None)
+            if product:
+                cart_items.append({
+                    'product_id': product_id,
+                    'quantity': item['quantity'],
+                    'name': product['product_name'],
+                    'price': product['price'],
+                    'image': product['image']
+                })
+        return jsonify(cart_items)
+
+
+@app.route('/clear-cart', methods=['POST'])
+def clear_cart():
+    with get_cart_db() as db:
+        db.clear()
+    return jsonify({"message": "Cart cleared"}), 200
+
+@app.route('/update-quantity', methods=['POST'])
+def update_quantity():
+    try:
+        data = request.json
+        product_id = str(data.get('productId'))
+        new_quantity = int(data.get('quantity', 0))
+
+        with get_cart_db() as db:
+            if product_id in db:
+                if new_quantity > 0:
+                    db[product_id]['quantity'] = new_quantity
+                else:
+                    del db[product_id]  # Remove item if quantity is 0
+            else:
+                return jsonify({"error": "Product not in cart"}), 404
+
+        return jsonify({"message": "Cart updated"}), 200
+    except Exception as e:
+        app.logger.error(f"Error in update-quantity: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
 @app.route('/checkout')
 def checkout():
     return render_template('checkout.html')
@@ -285,4 +355,3 @@ class PO_Paynow(PaymentOption):
 
 if __name__ == '__main__':
     app.run(debug=True)
-

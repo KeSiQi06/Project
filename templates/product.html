@@ -31,32 +31,35 @@
             <div class="list"></div>
 
     
-        <div class="card">
-            <h1>Your Shopping Cart</h1>
-            <div class="sidebar">
-            <ul class="listCard"></ul>
-            </div>
-            <div class="all">
-                <div class="total">0</div>
-                <div class="closeShopping" style="background-color: #FAB3A9;">Close</div>
-            </div>
-            <div class="CheckOut"><a href="{{ url_for('checkout') }}">Check Out</a></div>
-        </div>
+            <div class="card">
+                <h1>Your Shopping Cart</h1>
+                <div class="sidebar">
+                    <ul class="listCard"></ul>
+                </div>
+                <div class="all">
+                    <div class="total">Total Price: $0</div>
+                    <div class="closeShopping" style="background-color: #FAB3A9;">Close</div>
+                </div>
+                <div class="CheckOut"><a href="{{ url_for('checkout') }}">Check Out</a></div>
+            </div>    
+            
     </div>
     </header>
     <script src="{{ url_for('static', filename='java/header.js') }}"></script>
     <h1>Skincare Products</h1>
     <script src="{{ url_for('static', filename='java/product.js') }}"></script>
     <script>
-        // Function to handle checkout button click
-    function goToCheckout() {
-        // Retrieve the cart items from localStorage
-        const cartItems = JSON.parse(localStorage.getItem('cartItems'));
 
+    function goToCheckout() {
+    fetch('/get-cart')
+    .then(response => response.json())
+    .then(cartItems => {
         // Redirect to the checkout page with the cart items as query parameters in the URL
         const queryParams = new URLSearchParams({ cartItems: JSON.stringify(cartItems) });
         window.location.href = `checkout.html?${queryParams.toString()}`;
-    }
+    })
+    .catch(error => console.error('Error:', error));
+}
     </script>
 </body>
 </html>
