@@ -23,6 +23,7 @@
                 </div>
             </div>
 
+
             <div class="cart">
                 <div class="shopping">
                     <img src="{{ url_for('static', filename='photo/shopping.svg') }}">
@@ -30,7 +31,8 @@
             </div>
             <div class="list"></div>
 
-    
+
+   
             <div class="card">
                 <h1>Your Shopping Cart</h1>
                 <div class="sidebar">
@@ -42,13 +44,14 @@
                 </div>
                 <div class="CheckOut"><a href="{{ url_for('checkout') }}">Check Out</a></div>
             </div>    
-            
+           
     </div>
     </header>
     <script src="{{ url_for('static', filename='java/header.js') }}"></script>
     <h1>Skincare Products</h1>
     <script src="{{ url_for('static', filename='java/product.js') }}"></script>
     <script>
+
 
     function goToCheckout() {
     fetch('/get-cart')

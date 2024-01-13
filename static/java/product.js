@@ -6,6 +6,7 @@ let body = document.querySelector('body');
 let total = document.querySelector('.all .total');
 let quantity = document.querySelector('.all .quantity');
 
+
 let products = [
     {
         id: 1,
@@ -30,7 +31,9 @@ let products = [
     },
 ];
 
+
 let listCards = [];
+
 
 function addToCart(productId) {
     const quantity = 1; // Assuming you add one item at a time
@@ -54,6 +57,7 @@ function addToCart(productId) {
     .catch(error => console.error('Error:', error));
 }
 
+
 function changeQuantity(productId, newQuantity) {
     fetch('/update-quantity', {
         method: 'POST',
@@ -70,6 +74,7 @@ function changeQuantity(productId, newQuantity) {
     .catch(error => console.error('Error:', error));
 }
 
+
 function reloadCart() {
     fetch('/get-cart')
     .then(response => {
@@ -85,15 +90,18 @@ function reloadCart() {
     .catch(error => console.error('Error:', error));
 }
 
+
 function updateCartUI() {
     listCard.innerHTML = '';
     let count = 0;
     let totalPrice = 0;
 
+
     listCards.forEach(item => {
         // Calculate the total price and count for all items
         totalPrice += item.price * item.quantity;
         count += item.quantity;
+
 
         // Create a new list item for each cart item
         let newDiv = document.createElement('li');
@@ -109,10 +117,13 @@ function updateCartUI() {
         listCard.appendChild(newDiv);
     });
 
+
     // Update the total price and quantity after the loop
     total.innerText = `Total Price: $${totalPrice.toLocaleString()}`;
     quantity.innerText = `Total Items: ${count}`;
 }
+
+
 
 
 // Function to initialize the application
@@ -130,9 +141,14 @@ function initApp() {
         list.appendChild(newDiv);
     });
 
+
     // Load cart items from the server and update the UI
     reloadCart();
 }
 
+
 // Call initApp() to initialize your application
 initApp();
+
+
+
