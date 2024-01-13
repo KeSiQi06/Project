@@ -118,7 +118,6 @@ def update_profile():
         return redirect(url_for('login'))
 
 
-
 @app.route('/product')
 def product():
     return render_template('product.html')
@@ -130,22 +129,34 @@ def get_cart_db():
 def add_to_cart():
     try:
         data = request.json
-        product_id = str(data.get('productId'))  # Convert product_id to string
+        product_id = str(data.get('productId'))
         quantity = data.get('quantity')
 
         if not product_id or quantity is None:
             return jsonify({"error": "Product ID and quantity required"}), 400
 
-        with get_cart_db() as db:
-            if product_id in db:
-                db[product_id]['quantity'] += int(quantity)  # Ensure quantity is an integer
-            else:
-                db[product_id] = {'product_id': product_id, 'quantity': int(quantity)}
+        # Retrieve product details from your products list
+        product = next((p for p in products if str(p['id']) == product_id), None)
 
-        return jsonify({"message": "Product added to cart"}), 200
+        if product:
+            with get_cart_db() as db:
+                if product_id in db:
+                    db[product_id]['quantity'] += int(quantity)
+                else:
+                    db[product_id] = {
+                        'product_id': product_id,
+                        'quantity': int(quantity),
+                        'name': product['product_name'],
+                        'price': product['price'],  # Include the price here
+                        'image': f"/static/{product['image']}",  # Include the full image URL here
+                    }
+            return jsonify({"message": "Product added to cart"}), 200
+        else:
+            return jsonify({"error": "Product not found"}), 404
     except Exception as e:
         app.logger.error(f"Error in add-to-cart: {e}")
         return jsonify({"error": str(e)}), 500
+    
 
 @app.route('/get-cart', methods=['GET'])
 def get_cart():

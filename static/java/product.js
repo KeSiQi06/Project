@@ -36,25 +36,41 @@ let listCards = [];
 
 
 function addToCart(productId) {
-    const quantity = 1; // Assuming you add one item at a time
-    fetch('/add-to-cart', {
-        method: 'POST',
-        body: JSON.stringify({ productId: productId, quantity: quantity }),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log(data.message);
-        reloadCart(); // Reload cart from the server
-    })
-    .catch(error => console.error('Error:', error));
+    const existingItem = listCards.find(item => item.productId === productId);
+    const quantity = existingItem ? existingItem.quantity + 1 : 1;
+
+    // Find the product with the given productId in your product list
+    const product = products.find(p => p.id === productId);
+
+    if (product) {
+        // Include the 'image' property in the JSON data
+        const requestData = {
+            productId: productId,
+            quantity: quantity,
+            image: product.image, // Include the product's image URL
+        };
+
+        fetch('/add-to-cart', {
+            method: 'POST',
+            body: JSON.stringify(requestData),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data.message);
+            reloadCart(); // Reload cart from the server
+        })
+        .catch(error => console.error('Error:', error));
+    } else {
+        console.error('Product not found in the product list');
+    }
 }
 
 
@@ -92,38 +108,43 @@ function reloadCart() {
 
 
 function updateCartUI() {
-    listCard.innerHTML = '';
-    let count = 0;
-    let totalPrice = 0;
+    listCard = document.querySelector('.listCard'); // Find the listCard element
 
+    if (listCard) {
+        listCard.innerHTML = '';
+        let count = 0;
+        let totalPrice = 0;
 
-    listCards.forEach(item => {
-        // Calculate the total price and count for all items
-        totalPrice += item.price * item.quantity;
-        count += item.quantity;
+        listCards.forEach(item => {
+            totalPrice += item.price * item.quantity;
+            count += item.quantity;
 
+            let newDiv = document.createElement('li');
+            newDiv.innerHTML = `
+                <div><img src="/static/${item.image}" alt="${item.name}" /></div>
+                <div>${item.name}</div>
+                <div>$${(item.price * item.quantity).toLocaleString()}</div>
+                <div>
+                    <button onclick="changeQuantity(${item.product_id}, ${item.quantity - 1})">-</button>
+                    <div class="count">${item.quantity}</div>
+                    <button onclick="changeQuantity(${item.product_id}, ${item.quantity + 1})">+</button>
+                </div>`;
+            listCard.appendChild(newDiv);
+        });
 
-        // Create a new list item for each cart item
-        let newDiv = document.createElement('li');
-        newDiv.innerHTML = `
-            <div><img src="static/${item.image}"/></div>
-            <div>${item.name}</div>
-            <div>$${(item.price * item.quantity).toLocaleString()}</div>
-            <div>
-                <button onclick="changeQuantity(${item.id}, ${item.quantity - 1})">-</button>
-                <div class="count">${item.quantity}</div>
-                <button onclick="changeQuantity(${item.id}, ${item.quantity + 1})">+</button>
-            </div>`;
-        listCard.appendChild(newDiv);
-    });
+        total = document.querySelector('.all .total'); // Find the total element
+        quantity = document.querySelector('.all .quantity'); // Find the quantity element
 
-
-    // Update the total price and quantity after the loop
-    total.innerText = `Total Price: $${totalPrice.toLocaleString()}`;
-    quantity.innerText = `Total Items: ${count}`;
+        if (total && quantity) {
+            total.innerText = `Total Price: $${totalPrice.toLocaleString()}`;
+            quantity.innerText = `Total Items: ${count}`;
+        } else {
+            console.error("Total or quantity element not found");
+        }
+    } else {
+        console.error("listCard element not found");
+    }
 }
-
-
 
 
 // Function to initialize the application
@@ -133,7 +154,7 @@ function initApp() {
         let newDiv = document.createElement('div');
         newDiv.classList.add('item');
         newDiv.innerHTML = `
-            <img src="static/${product.image}">
+        <img src="/static/${product.image}">
             <div class="title">${product.name}</div>
             <p class="description">${product.description}</p>
             <div class="price">$${product.price.toLocaleString()}</div>
@@ -149,6 +170,4 @@ function initApp() {
 
 // Call initApp() to initialize your application
 initApp();
-
-
 
