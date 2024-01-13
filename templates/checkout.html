@@ -127,71 +127,39 @@ label {
 <div id="total-cost-container">
   <!-- The total cost will be dynamically added here -->
 </div>
-<hr>
-      <form id="checkout-form" action="Notification.html" autocomplete="off" onsubmit="submitForm(event)">
-        <div class="row">
-          <div class="col-50">
-            <h3>Billing Address</h3>
-            <label for="fname"><i class="fa fa-user"></i> Full Name</label>
-            <input type="text" id="fname" name="firstname" placeholder="John M. Doe" required>
-            <label for="email"><i class="fa fa-envelope"></i> Email</label>
-            <input type="email" id="email" name="email" placeholder="john@example.com" required>
-            <br>
-            <label for="contact"><i class="fa-solid fa-phone"></i> Contact number (+65)</label>
-            <input type="tel" id="contact" name="contact" title = "8 digit number" pattern="\d{8}" placeholder="98765432" required/>
-            <br>
-
-
-            <div class="row">
-              <div class="col-50">
-                <label for="adr"><i class="fa fa-address-card-o"></i> Address</label>
-                <input type="text" id="adr" name="address" placeholder="Yishun Street 41 Blk 888C #15-27" required>
-              </div>
-              <div class="col-50">
-                <label for="zip">Postal Code</label>
-                <input type="text" id="zip" name="zip" placeholder="321456" required>
-              </div>
-            </div>
-          </div>
-
-
-          <div class="col-50">
-            <h3>Payment</h3>
-            <label for="fname">Accepted Cards</label>
-            <div class="icon-container">
-              <i class="fa fa-cc-visa" style="color:navy;"></i>
-              <i class="fa fa-cc-amex" style="color:blue;"></i>
-              <i class="fa fa-cc-mastercard" style="color:red;"></i>
-              <i class="fa fa-cc-discover" style="color:orange;"></i>
-             
-            </div>
-            <label for="cname">Name on Card</label>
-            <input type="text" id="cname" name="cardname" placeholder="John More Doe" required>
-            <label for="ccnum">Credit card number</label>
-            <input type="text" id="ccnum" name="cardnumber" placeholder="1111-2222-3333-4444" required>
-            <label for="expmonth">Exp Month</label>
-            <input type="text" id="expmonth" name="expmonth" placeholder="02" required>
-            <div class="row">
-              <div class="col-50">
-                <label for="expyear">Exp Year</label>
-                <input type="text" id="expyear" name="expyear" placeholder="2025" required>
-              </div>
-              <div class="col-50">
-                <label for="cvv">CVV</label>
-                <input type="text" id="cvv" name="cvv" placeholder="352" pattern="\d{3}"required>
-              </div>
-            </div>
-          </div>
          
-        </div>
-        <label>
-          <input type="checkbox" checked="checked" name="sameadr"> Shipping address same as billing
-        </label>
-        <input type="submit" value="Continue to checkout" class="btn">
-      </form>
-    </div>
-  </div>
-</div>
+<!-- Interactive Header -->
+<h1>Order summary | {{ num_items }} items</h1>
+
+<!-- Item(s) Subtotal -->
+<p>Item(s) Subtotal: ${{ item_subtotal }}</p>
+
+<!-- Discount Code Section -->
+<p>Discount Code Section:</p>
+<form action="/" method="GET">
+  <label for="discount_code">Enter discount code:</label>
+  <input type="text" id="discount_code" name="discount_code">
+  <input type="submit" value="Apply Discount">
+</form>
+
+<!-- Delivery Fee -->
+<p>Delivery Fee: ${{ delivery_fee }}</p>
+
+<!-- Subtotal -->
+<p>Subtotal: ${{ subtotal }}</p>
+
+<!-- Order Total -->
+<p>Order Total: ${{ order_total }}</p>
+
+<!-- Checkout Button -->
+<a href="delivery_address">
+  <input type="button" value="Proceed to Checkout" />
+</a>
+
+<!-- Continue Shopping Button -->
+<a href="product">
+  <input type="button" value="Continue Shopping" />
+</a>
 
 
 <script>

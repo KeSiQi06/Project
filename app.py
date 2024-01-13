@@ -1,9 +1,9 @@
-from flask import Flask, render_template, url_for, request, session, redirect, jsonify
+from flask import Flask, render_template, url_for, request, session, redirect, jsonify, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 import shelve
+import random
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'
 
 def get_db():
     db = shelve.open('mydatabase.db', writeback=True)
@@ -160,7 +160,7 @@ def get_cart():
                     'quantity': item['quantity'],
                     'name': product['product_name'],
                     'price': product['price'],
-                    'image': product['image']
+                    #'image': product['image']
                 })
         return jsonify(cart_items)
 
@@ -196,6 +196,10 @@ def update_quantity():
 @app.route('/checkout')
 def checkout():
     return render_template('checkout.html')
+
+@app.route('/address')
+def address():
+    return render_template('address_checkout')
 
 #Route for Payment
 @app.route('/payment', methods=['GET', 'POST'])
@@ -352,6 +356,100 @@ class PO_Paynow(PaymentOption):
         self.paynow_account = paynow_account
         self.paynow_transaction_id = paynow_transaction_id
 #classes for payment ^^^
+
+#Order Summary
+# Fixed delivery fee
+delivery_fee = 10
+
+# Fixed discount code
+discount_code = "123D"
+discount_percentage = 0.10  # 10%
+
+@app.route('/')
+def order_summary():
+    # Open the shelf file to retrieve cart items
+    with shelve.open('cart_data') as shelf:
+        cart_items = shelf.get('cart_items', [])
+
+    # Calculate item(s) subtotal
+    item_subtotal = sum(item['price'] for item in cart_items)
+
+    # Apply discount if the correct code is entered
+    discount_applied = False
+    discount_amount = 0
+
+    if 'discount_code' in request.args and request.args['discount_code'] == discount_code:
+        discount_amount = item_subtotal * discount_percentage
+        item_subtotal -= discount_amount
+        discount_applied = True
+
+    # Calculate subtotal and order total
+    subtotal = item_subtotal + delivery_fee
+    order_total = subtotal - discount_amount
+
+    # Get the number of items in the cart
+    num_items = len(cart_items)
+
+    return render_template(
+        'checkout.html',
+        num_items=num_items,
+        item_subtotal=item_subtotal,
+        delivery_fee=delivery_fee,
+        discount_applied=discount_applied,
+        discount_code=discount_code,
+        subtotal=subtotal,
+        order_total=order_total
+    )
+
+#ADD TO CART SHELVE PART
+#ADD TO CART SHELVE PART ^^^
+
+#Delivery Address and thank you page
+@app.route('/delivery_address', methods=['GET', 'POST'])
+def delivery_address():
+    if request.method == 'POST':
+        # Retrieve form data
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        street_address = request.form['street_address']
+        address_details = request.form['address_details']
+        city = request.form['city']
+        postal_code = request.form['postal_code']
+        contact_number = request.form['contact_number']
+
+        # Store the customer's address in shelve
+        with shelve.open('customer_data', writeback=True) as shelf:
+            address_key = f"{first_name}_{last_name}_address"
+            shelf[address_key] = {
+                'first_name': first_name,
+                'last_name': last_name,
+                'street_address': street_address,
+                'address_details': address_details,
+                'city': city,
+                'postal_code': postal_code,
+                'contact_number': contact_number
+            }
+
+        flash('Delivery address submitted successfully!', 'success')
+        return redirect(url_for('payment'))
+
+    return render_template('delivery_address.html')
+
+@app.route('/thank_you')
+def thank_you():
+    # Generate a unique order number
+    order_number = generate_order_number()
+
+    # Store the order number in shelve
+    with shelve.open('order_data', writeback=True) as shelf:
+        shelf['order_number'] = order_number
+
+    return render_template('thank_you.html', order_number=order_number)
+
+def generate_order_number():
+    # Generate a random order number
+    return ''.join(random.choices('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', k=8))
+
 
 if __name__ == '__main__':
     app.run(debug=True)

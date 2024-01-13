@@ -3,49 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha384-dfPRVfkOuUnYfu1iu4FoHgoL9otJ7y8tOMuEXsXB6geNZU+qGQFA/iSTmMA6jNbI" crossorigin="anonymous">
     <title>Payment Page</title>
 </head>
 <body>
-    <h1>Payment Page</h1>
-    <form method="post" action="/payment">
-        <label for="payment_id">Payment ID:</label>
-        <input type="text" name="payment_id" required><br>
-
-
-        <label for="order_id">Order ID:</label>
-        <input type="text" name="order_id" required><br>
-
-
-        <label for="payment_datetime">Payment DateTime:</label>
-        <input type="text" name="payment_datetime" required><br>
-
-
-        <label for="amount">Amount:</label>
-        <input type="text" name="amount" required><br>
-
-
-        <label for="customer_id">Customer ID:</label>
-        <input type="text" name="customer_id" required><br>
-
-
-        <label for="payment_option">Payment Option:</label>
+    <h1>Payment</h1>
+        <label for="payment_option"><h2>Payment Option</h2></label>
         <div>
             <input type="radio" name="payment_option" value="1" checked> Credit Card
             <input type="radio" name="payment_option" value="2"> Google Pay
             <input type="radio" name="payment_option" value="3"> PayNow
         </div><br>
 
-
-        <label for="payment_option_id">Payment Option ID:</label>
-        <input type="text" name="payment_option_id" required><br>
-
-
         <div id="payment_option_details">
             {% include 'credit_card.html' %}
         </div>
 
 
-        <input type="submit" value="Submit Payment">
+        <a href="thank_you">
+            <input type="button" value="Submit" />
+         </a>
     </form>
 
 
