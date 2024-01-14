@@ -317,13 +317,18 @@ def remove_product():
     # If the product with the given ID is not found
     return jsonify({'status': 'error', 'message': 'Product not found'})
 
-@app.route('/customerprofile')
-def customerprofile():
+@app.route('/customer_profile')
+def customer_profile():
+    # Add your logic for the customer profile route
     return render_template('customerprofile.html')
+
+
 
 @app.route('/report')
 def report():
+    # Add your logic for the report route
     return render_template('report.html')
+
 
 # Classes for payment
 class Payment:
