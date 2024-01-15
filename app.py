@@ -2,6 +2,10 @@ from flask import Flask, render_template, url_for, request, session, redirect, j
 from werkzeug.security import generate_password_hash, check_password_hash
 import shelve
 
+
+
+
+
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
@@ -32,7 +36,7 @@ def signup():
         birthday = request.form['birthday']  # Assuming it's a string
 
         db = get_db()
-        users = db['users']
+        users = db['users'] 
 
         if email in users:
             close_db(db)
@@ -328,6 +332,9 @@ def customer_profile():
 def report():
     # Add your logic for the report route
     return render_template('report.html')
+
+
+
 
 
 # Classes for payment
