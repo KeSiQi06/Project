@@ -1,17 +1,15 @@
-from flask import Flask, render_template, url_for, request, session, redirect, jsonify
+from flask import Flask, render_template, url_for, request, session, redirect, jsonify, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 import shelve
-
-
-
 
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
 def get_db():
-    db = shelve.open('mydatabase.db', writeback=True)
+    db = shelve.open('newdatabase.db', writeback=True)  # Change the filename here
     if 'users' not in db:
+        print("Creating new database")
         db['users'] = {}
     return db
 
@@ -47,8 +45,10 @@ def signup():
         db['users'] = users
         close_db(db)
 
+        flash('You have successfully signed up!', 'success')
         return redirect(url_for('login'))
     return render_template('signup.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -75,7 +75,9 @@ def login():
                 return redirect(url_for('home'))
             else:
                 close_db(db)
-                return 'Login failed. Please check your credentials.'
+                flash('Login failed. Please check your credentials.')
+                return redirect(url_for('login'))
+
     
     return render_template('login.html')
 
@@ -124,7 +126,8 @@ def update_profile():
 
 @app.route('/product')
 def product():
-    return render_template('product.html')
+    user_name = session.get('user_name', '')  # Get the user_name from the session
+    return render_template('product.html', user_name=user_name)
 
 def get_cart_db():
     return shelve.open("cart.db")
@@ -136,11 +139,14 @@ def add_to_cart():
         product_id = str(data.get('productId'))
         quantity = data.get('quantity')
 
+
         if not product_id or quantity is None:
             return jsonify({"error": "Product ID and quantity required"}), 400
 
+
         # Retrieve product details from your products list
         product = next((p for p in products if str(p['id']) == product_id), None)
+
 
         if product:
             with get_cart_db() as db:
@@ -160,6 +166,8 @@ def add_to_cart():
     except Exception as e:
         app.logger.error(f"Error in add-to-cart: {e}")
         return jsonify({"error": str(e)}), 500
+   
+
     
 
 @app.route('/get-cart', methods=['GET'])
@@ -182,11 +190,14 @@ def get_cart():
         return jsonify(cart_items)
 
 
+
+
 @app.route('/clear-cart', methods=['POST'])
 def clear_cart():
     with get_cart_db() as db:
         db.clear()
     return jsonify({"message": "Cart cleared"}), 200
+
 
 @app.route('/update-quantity', methods=['POST'])
 def update_quantity():
@@ -194,6 +205,7 @@ def update_quantity():
         data = request.json
         product_id = str(data.get('productId'))
         new_quantity = int(data.get('quantity', 0))
+
 
         with get_cart_db() as db:
             if product_id in db:
@@ -203,6 +215,7 @@ def update_quantity():
                     del db[product_id]  # Remove item if quantity is 0
             else:
                 return jsonify({"error": "Product not in cart"}), 404
+
 
         return jsonify({"message": "Cart updated"}), 200
     except Exception as e:
@@ -270,9 +283,9 @@ def history():
 def feedbackform():
     return render_template('feedbackform.html')
 
-@app.route('/chatbot')
-def chatbot():
-    return render_template('chatbot.html')
+@app.route('/feedback')
+def feedback():
+    return render_template('feedback.html')
 
 @app.route('/index')
 def index():
@@ -284,10 +297,11 @@ def purchase_details():
 
 # List to store product data (replace this with a database in a real application)
 products = [
-    {'id': 1, 'product_name': 'Moisturiser', 'price': '$32', 'stocks': '9000', 'description': 'xxxxxxxx', 'points': '40'},
-    {'id': 2, 'product_name': 'Serum', 'price': '$49', 'stocks': '1200', 'description': 'xxxxxxxx', 'points': '40'},
-    {'id': 3, 'product_name': 'Lip Balm', 'price': '$18', 'stocks': '9800', 'description': 'xxxxxxxx', 'points': '20'},
+    {'id': 1, 'product_name': 'Ultra Facial Toner', 'price': '32', 'stocks': '9000', 'description': 'xxxxxxxx', 'image': 'photo/SkinCare/Toner/UltraFacialToner.jpg', 'points': '40'},
+    {'id': 2, 'product_name': 'Sunscreen', 'price': '49', 'stocks': '1200', 'description': 'xxxxxxxx', 'points': '40', 'image' : 'photo/SkinCare/Sunscreen/Sunscreen_Type 1.jpg'},
+    {'id': 3, 'product_name': 'Moisturizer', 'price': '18', 'stocks': '9800', 'description': 'xxxxxxxx', 'points': '20', 'image': 'photo/SkinCare/Moisturizer/Moisturizer_Type 1.jpg'},
 ]
+
 
 @app.route('/inventory')
 def inventory():
@@ -327,14 +341,10 @@ def customer_profile():
     return render_template('customerprofile.html')
 
 
-
 @app.route('/report')
 def report():
     # Add your logic for the report route
     return render_template('report.html')
-
-
-
 
 
 # Classes for payment

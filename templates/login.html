@@ -26,5 +26,11 @@
     </div>
     {% endif %}
     
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+       <script>alert('{{ messages[0][1] }}');</script>
+    {% endif %}
+    {% endwith %}
+
 </body>
 </html>

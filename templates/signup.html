@@ -17,5 +17,14 @@
         <input type="submit" value="Sign Up">
     </form>
     <p>Already have an account? <a href="/login">Log in</a></p>
+
+
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+       <script>alert('{{ messages[0][1] }}');</script>
+    {% endif %}
+    {% endwith %}
+
+    
 </body>
 </html>
