@@ -8,12 +8,15 @@ app.secret_key = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db = SQLAlchemy(app)
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
-    birthday = db.Column(db.String(10), nullable=True)
+def get_db():
+    db = shelve.open('newdatabase.db', writeback=True)  # Change the filename here
+    if 'users' not in db:
+        print("Creating new database")
+        db['users'] = {}
+    return db
+
+def close_db(db):
+    db.close()
 
 # Hardcoded staff credentials
 STAFF_ID = '2468'
@@ -286,7 +289,9 @@ def feedbackform():
 def feedback():
     return render_template('feedback.html')
 
-
+@app.route('/index')
+def index():
+    return render_template('index.html')
 
 @app.route('/purchase_details')
 def purchase_details():
