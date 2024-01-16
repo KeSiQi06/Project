@@ -298,7 +298,11 @@ def index():
 def purchase_details():
     return render_template('purchase_details')
 
-
+products = [
+    {'id': 1, 'product_name': 'Ultra Facial Toner', 'price': '32', 'stocks': '9000', 'description': 'xxxxxxxx', 'image': 'photo/SkinCare/Toner/UltraFacialToner.jpg', 'points': '40'},
+    {'id': 2, 'product_name': 'Sunscreen', 'price': '49', 'stocks': '1200', 'description': 'xxxxxxxx', 'points': '40', 'image' : 'photo/SkinCare/Sunscreen/Sunscreen_Type 1.jpg'},
+    {'id': 3, 'product_name': 'Moisturizer', 'price': '18', 'stocks': '9800', 'description': 'xxxxxxxx', 'points': '20', 'image': 'photo/SkinCare/Moisturizer/Moisturizer_Type 1.jpg'},
+]
 
 #START OF INVENTORY
 class Product(db.Model):
