@@ -1,117 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inventory Page</title>
-  <style>
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
-    }
-
-    th {
-      background-color: #f2f2f2;
-    }
-
-    .remove-button {
-      cursor: pointer;
-      background-color: #ff6666;
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 12px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Inventory</title>
 </head>
 <body>
-
   <nav>
     <ul>
       <li><a href="{{ url_for('inventory') }}">Inventory</a></li>
-      <li><a href="{{ url_for('customer_profile') }}">Customer Profile</a></li>
+      <li><a href="{{ url_for('customerprofile') }}">Customer Profile</a></li>
       <li><a href="{{ url_for('purchase_details') }}">Purchase Details</a></li>
       <li><a href="{{ url_for('report') }}">Report</a></li>
       <li style="float: right;">Staff ID: 2468</li>
     </ul>
   </nav>
-
-  <form method="post" action="/add_product">
-    <button type="submit">ADD NEW PRODUCT</button>
-    <input type="text" name="product_name" placeholder="Product Name">
-    <input type="text" name="price" placeholder="Price">
-    <input type="text" name="stocks" placeholder="Stocks">
-    <input type="text" name="description" placeholder="Description">
-    <input type="text" name="points" placeholder="Points">
-  </form>
-
-  <form method="post" action="/remove_product" id="removeForm">
-    <input type="hidden" name="product_id" id="productId">
-  </form>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Product</th>
-        <th>Price</th>
-        <th>Stocks</th>
-        <th>Description</th>
-        <th>Points</th>
-        <th>Remove</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Dynamic content for new products -->
-      {% for product in products %}
+    <h1>Shop Inventory</h1>
+    <a href="{{ url_for('add_product') }}">Add Product</a>
+    <table border="1">
         <tr>
-          <td>{{ product.product_name }}</td>
-          <td>{{ product.price }}</td>
-          <td>{{ product.stocks }}</td>
-          <td>{{ product.description }}</td>
-          <td>{{ product.points }}</td>
-          <td style="text-align: center;">
-            <button class="remove-button" data-product-id="{{ product.id }}" onclick="removeProduct('{{ product.id }}')">Remove</button>
-          </td>
+            <th>Product Name</th>
+            <th>Price</th>
+            <th>Stocks</th>
+            <th>Description</th>
+            <th>Points</th>
+            <th>Action</th>
         </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-
-  <script>
-    function removeProduct(productId) {
-      var formData = new FormData();
-      formData.append('product_id', productId);
-  
-      fetch('/remove_product', {
-        method: 'POST',
-        body: formData
-      })
-      .then(response => response.json())
-      .then(data => {
-        // Handle the response here if needed
-        console.log(data);
-        // Optionally, you can reload the page after successful removal
-        if (data.status === 'success') {
-          location.reload();
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-    }
-  </script>
-  
-  
-
+        {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.price }}</td>
+                <td>{{ product.stocks }}</td>
+                <td>{{ product.description or 'N/A' }}</td>
+                <td>{{ product.points or 'N/A' }}</td>
+                <td>
+                    <a href="{{ url_for('edit_product', id=product.id) }}">Edit</a>
+                    <a href="{{ url_for('delete_product', id=product.id) }}">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
 </body>
 </html>

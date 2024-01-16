@@ -1,20 +1,19 @@
 from flask import Flask, render_template, url_for, request, session, redirect, jsonify, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-import shelve
-
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
-def get_db():
-    db = shelve.open('newdatabase.db', writeback=True)  # Change the filename here
-    if 'users' not in db:
-        print("Creating new database")
-        db['users'] = {}
-    return db
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+db = SQLAlchemy(app)
 
-def close_db(db):
-    db.close()
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    birthday = db.Column(db.String(10), nullable=True)
 
 # Hardcoded staff credentials
 STAFF_ID = '2468'
@@ -287,64 +286,184 @@ def feedbackform():
 def feedback():
     return render_template('feedback.html')
 
-@app.route('/index')
-def index():
-    return render_template('index.html')
+
 
 @app.route('/purchase_details')
 def purchase_details():
     return render_template('purchase_details')
 
-# List to store product data (replace this with a database in a real application)
-products = [
-    {'id': 1, 'product_name': 'Ultra Facial Toner', 'price': '32', 'stocks': '9000', 'description': 'xxxxxxxx', 'image': 'photo/SkinCare/Toner/UltraFacialToner.jpg', 'points': '40'},
-    {'id': 2, 'product_name': 'Sunscreen', 'price': '49', 'stocks': '1200', 'description': 'xxxxxxxx', 'points': '40', 'image' : 'photo/SkinCare/Sunscreen/Sunscreen_Type 1.jpg'},
-    {'id': 3, 'product_name': 'Moisturizer', 'price': '18', 'stocks': '9800', 'description': 'xxxxxxxx', 'points': '20', 'image': 'photo/SkinCare/Moisturizer/Moisturizer_Type 1.jpg'},
-]
 
+
+#START OF INVENTORY
+class Product(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    stocks = db.Column(db.Integer, nullable=False)
+    description = db.Column(db.String(255), nullable=True)
+    points = db.Column(db.Integer, nullable=True)
 
 @app.route('/inventory')
 def inventory():
+    products = Product.query.all()
     return render_template('inventory.html', products=products)
 
-@app.route('/add_product', methods=['POST'])
+
+
+@app.route('/add_product', methods=['GET', 'POST'])
 def add_product():
-    new_product_data = {
-        'id': len(products) + 1,  # Ensure a unique ID for the new product
-        'product_name': request.form.get('product_name'),
-        'price': request.form.get('price'),
-        'stocks': request.form.get('stocks'),
-        'description': request.form.get('description'),
-        'points': request.form.get('points'),
-    }
+    if request.method == 'POST':
+        # Retrieve form data and add product to the database
+        name = request.form['name']
+        price = request.form['price']
+        stocks = request.form['stocks']
+        description = request.form['description']
+        points = request.form['points']
 
-    products.append(new_product_data)
+        # Add logic to store the product in your database (e.g., SQLAlchemy)
+        new_product = Product(name=name, price=price, stocks=stocks, description=description, points=points)
+        db.session.add(new_product)
+        db.session.commit()
 
-    return render_template('inventory.html', products=products)
+        return redirect(url_for('inventory'))  # Redirect to inventory after adding a product
 
-@app.route('/remove_product', methods=['POST'])
-def remove_product():
-    product_id = int(request.form.get('product_id'))
+    return render_template('add_product.html')
 
-    # Find the product with the given id and remove it
-    for product in products:
-        if product['id'] == product_id:
-            products.remove(product)
-            return jsonify({'status': 'success', 'message': 'Product removed successfully'})
 
-    # If the product with the given ID is not found
-    return jsonify({'status': 'error', 'message': 'Product not found'})
 
-@app.route('/customer_profile')
-def customer_profile():
-    # Add your logic for the customer profile route
-    return render_template('customerprofile.html')
+
+# ... (your existing code)
+
+@app.route('/edit_product/<int:id>', methods=['GET', 'POST'])
+def edit_product(id):
+    # Add logic to retrieve and edit the product with the given ID
+    product = Product.query.get(id)
+    
+    if not product:
+        flash('Product not found.', 'error')
+        return redirect(url_for('inventory'))
+
+    if request.method == 'POST':
+        # Update product details based on the form submission
+        product.name = request.form['name']
+        product.price = request.form['price']
+        product.stocks = request.form['stocks']
+        product.description = request.form['description']
+        product.points = request.form['points']
+
+        # Commit the changes to the database
+        db.session.commit()
+
+        flash(f'Product "{product.name}" has been updated successfully.', 'success')
+        return redirect(url_for('inventory'))
+
+    # Render the edit_product.html template with the product details
+    return render_template('edit_product.html', product=product)
+
+# ... (rest of your code)
+
+
+# ... (your existing code)
+
+@app.route('/delete_product/<int:id>')
+def delete_product(id):
+    # Add logic to retrieve and delete the product with the given ID
+    product = Product.query.get(id)
+    
+    if product:
+        # Delete the product from the database
+        db.session.delete(product)
+        db.session.commit()
+        flash(f'Product "{product.name}" has been deleted successfully.', 'success')
+    else:
+        flash('Product not found.', 'error')
+
+    return redirect(url_for('inventory'))
+
+# END OF INVENTORY
+
+
+
+# START OF CUSTOMER PROFILE
+
+class Customer(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    contact = db.Column(db.String(15), nullable=False)
+    name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+
+# ... (your existing code)
+
+@app.route('/customerprofile')
+def customerprofile():
+    customers = Customer.query.all()
+    return render_template('customerprofile.html', customers=customers)
+
+@app.route('/add_customer', methods=['GET', 'POST'])
+def add_customer():
+    if request.method == 'POST':
+        # Retrieve form data and add customer to the database
+        contact = request.form['contact']
+        name = request.form['name']
+        email = request.form['email']
+
+        # Add logic to store the customer in your database (e.g., SQLAlchemy)
+        new_customer = Customer(contact=contact, name=name, email=email)
+        db.session.add(new_customer)
+        db.session.commit()
+
+        return redirect(url_for('customerprofile'))  # Redirect to customer profiles after adding a customer
+
+    return render_template('add_customer.html')
+
+@app.route('/edit_customer/<int:id>', methods=['GET', 'POST'])
+def edit_customer(id):
+    # Add logic to retrieve and edit the customer with the given ID
+    customer = Customer.query.get(id)
+    
+    if not customer:
+        flash('Customer not found.', 'error')
+        return redirect(url_for('customerprofile'))
+
+    if request.method == 'POST':
+        # Update customer details based on the form submission
+        customer.contact = request.form['contact']
+        customer.name = request.form['name']
+        customer.email = request.form['email']
+
+        # Commit the changes to the database
+        db.session.commit()
+
+        flash(f'Customer "{customer.name}" has been updated successfully.', 'success')
+        return redirect(url_for('customerprofile'))
+
+    # Render the edit_customer.html template with the customer details
+    return render_template('edit_customer.html', customer=customer)
+
+@app.route('/delete_customer/<int:id>')
+def delete_customer(id):
+    customer_to_delete = Customer.query.get(id)
+    if customer_to_delete:
+        db.session.delete(customer_to_delete)
+        db.session.commit()
+        flash(f'Customer "{customer_to_delete.name}" has been deleted successfully.', 'success')
+    else:
+        flash('Customer not found.', 'error')
+    return redirect(url_for('customerprofile'))
+
+# END OF CUSTOMER PROFILE
+
 
 
 @app.route('/report')
 def report():
     # Add your logic for the report route
     return render_template('report.html')
+
+@app.route('/report2')
+def report2():
+    # Add your logic for the report route
+    return render_template('report2.html')
 
 
 # Classes for payment
@@ -389,4 +508,6 @@ class PO_Paynow(PaymentOption):
 #classes for payment ^^^
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)

@@ -1,58 +1,40 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Customer Profile</title>
-<link rel="stylesheet" href="../static/css/inventory.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Profiles</title>
 </head>
 <body>
-    
   <nav>
     <ul>
       <li><a href="{{ url_for('inventory') }}">Inventory</a></li>
-      <li><a href="{{ url_for('customer_profile') }}">Customer Profile</a></li>
+      <li><a href="{{ url_for('customerprofile') }}">Customer Profile</a></li>
       <li><a href="{{ url_for('purchase_details') }}">Purchase Details</a></li>
       <li><a href="{{ url_for('report') }}">Report</a></li>
       <li style="float: right;">Staff ID: 2468</li>
     </ul>
   </nav>
-  
-
-<table>
-    <thead>
-      <tr>
-        <th>Customer ID</th>
-        <th>Contact</th>
-        <th>Name</th>
-        <th>Email</th>
-      
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td >1456344D</td>
-        <td>15478236</td>
-        <td>Sasha</td>
-        <td>sash@gmail.com</td>
-      </tr>
-      <tr>
-        <td >1997645E</td>
-        <td>88724761</td>
-        <td>Tyler</td>
-        <td>tyl@gmail.com</td>
-        
-      </tr>
-      <tr>
-        <td>5664398A</td>
-        <td>76450337</td>
-        <td>Ariana</td>
-        <td>ari@gmail.com</td>
-        
-      </tr>
-  
-      </tbody>
-  </table>
-  
-  <button style="float: right;">EDIT</button>
+    <h1>Customer Profiles</h1>
+    <a href="{{ url_for('add_customer') }}">Add Customer</a>
+    <table border="1">
+        <tr>
+            <th>Contact</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Action</th>
+        </tr>
+        {% for customer in customers %}
+            <tr>
+                <td>{{ customer.contact }}</td>
+                <td>{{ customer.name }}</td>
+                <td>{{ customer.email }}</td>
+                <td>
+                    <a href="{{ url_for('edit_customer', id=customer.id) }}">Edit</a>
+                    <a href="{{ url_for('delete_customer', id=customer.id) }}">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
 </body>
 </html>

@@ -5,7 +5,7 @@
     <nav>
         <ul>
           <li><a href="{{ url_for('inventory') }}">Inventory</a></li>
-          <li><a href="{{ url_for('customer_profile') }}">Customer Profile</a></li>
+          <li><a href="{{ url_for('customerprofile') }}">Customer Profile</a></li>
           <li><a href="{{ url_for('purchase_details') }}">Purchase Details</a></li>
           <li><a href="{{ url_for('report') }}">Report</a></li>
           <li style="float: right;">Staff ID: 2468</li>
@@ -16,8 +16,8 @@
       <div class="dropdown">
         <button>Year | 2022</button>
         <div class="dropdown-content">
-        <a href="../templates/report.html">2023</a>
-        <a href="../templates/report2.html">2022</a>
+        <a href="{{ url_for('report') }}">2023</a>
+        <a href="{{ url_for('report2') }}">2022</a>
         
         </div>
       </div>
