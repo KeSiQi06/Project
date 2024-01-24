@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "__pycache__"
+		},
+		{
+			"path": "static"
+		},
+		{
+			"path": "templates"
+		},
+		{
+			"path": "venv"
+		},
+		{
+			"path": ".vscode"
+		}
+	]
+}
